@@ -1,0 +1,271 @@
+{
+  "campaign_name": "Agent AI Development Campaign",
+  "ad_groups": [
+    {
+      "name": "Brand/Solution Focused",
+      "keywords": [
+        {
+          "keyword": "[agent ai development]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[ai workflow automation]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[automate workflows]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[luby software]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[ai agents]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[ai solutions]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[workflow agents]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[ai development services]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[intelligent agents]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[business automation]",
+          "match_type": "exact"
+        }
+      ],
+      "negative_keywords": [
+        "free",
+        "cheap",
+        "tutorial"
+      ],
+      "ads": [
+        {
+          "headlines": [
+            "AI Agents That Deliver",
+            "Automate Workflows Safely",
+            "Luby AI Development",
+            "Reliable AI Solutions",
+            "Control Your AI Agents",
+            "Tailored Agent Design",
+            "Agent Readiness Assessments",
+            "Build Smart Workflows",
+            "Governance in AI",
+            "Production-Grade Reliability",
+            "Success Metrics Defined",
+            "AI for Modern Businesses",
+            "Elevate Your Operations",
+            "Transform Legacy Systems",
+            "Trusted AI Partner"
+          ],
+          "descriptions": [
+            "Build AI agents that take action safely.",
+            "Automate workflows with real-time approvals.",
+            "Agent development with governance and control.",
+            "Get a reliable assessment for your needs."
+          ],
+          "final_url": "https://landing.luby.co/agentic_ai_development",
+          "path1": "AI-Agents",
+          "path2": "Development"
+        }
+      ]
+    },
+    {
+      "name": "Pain Point Focused",
+      "keywords": [
+        {
+          "keyword": "[agent failures]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[workflow control issues]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[data exposure risks]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[integration problems]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[hidden costs in automation]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[latency issues AI]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[audit trails for agents]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[no ownership model]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[trust in AI outcomes]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[agent governance]",
+          "match_type": "exact"
+        }
+      ],
+      "negative_keywords": [
+        "free",
+        "cheap",
+        "solutions"
+      ],
+      "ads": [
+        {
+          "headlines": [
+            "Control Your AI Agents",
+            "Prevent Workflow Breaks",
+            "Secure Sensitive Data",
+            "Trust AI Outcomes",
+            "Reduce Integration Issues",
+            "Cut Hidden Costs",
+            "Low Latency Solutions",
+            "Audit Trails Matter",
+            "Ensure Ownership Model",
+            "Governance for Agents",
+            "Fix Agent Failures",
+            "Reliable Automation",
+            "Quality Metrics Defined",
+            "Transform Workflows",
+            "Safety in AI Actions"
+          ],
+          "descriptions": [
+            "No more agent failures in workflows.",
+            "Control actions to reduce risks.",
+            "Protect data with strict permissions.",
+            "Get clarity and trust in AI outputs."
+          ],
+          "final_url": "https://landing.luby.co/agentic_ai_development",
+          "path1": "Agent-Safety",
+          "path2": "Control"
+        }
+      ]
+    },
+    {
+      "name": "Competitor/Alternative Focused",
+      "keywords": [
+        {
+          "keyword": "[compare ai solutions]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[best ai automation tools]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[ai agent alternatives]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[ai solutions comparison]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[leading ai agents]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[top automation services]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[agent tools review]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[evaluate ai agents]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[ai technology options]",
+          "match_type": "exact"
+        },
+        {
+          "keyword": "[best automation platforms]",
+          "match_type": "exact"
+        }
+      ],
+      "negative_keywords": [
+        "free",
+        "cheap",
+        "basic"
+      ],
+      "ads": [
+        {
+          "headlines": [
+            "Top AI Automation Tools",
+            "Luby vs Other Solutions",
+            "Best Agent Development",
+            "Evaluate AI Options",
+            "Reliable AI Alternatives",
+            "Trusted Automation Services",
+            "Smart Agent Solutions",
+            "Effective Workflow Agents",
+            "Modernize Your Business",
+            "Control Your Automation",
+            "AI Agent Comparisons",
+            "Discover Luby's Advantage",
+            "Transforming Legacy Systems",
+            "Secure and Governed Agents",
+            "Superior AI Development"
+          ],
+          "descriptions": [
+            "Compare Luby AI with competitors.",
+            "Discover reliable automation services.",
+            "Find the best agent solutions for you.",
+            "Evaluate your options for success."
+          ],
+          "final_url": "https://landing.luby.co/agentic_ai_development",
+          "path1": "Compare-Agents",
+          "path2": "Solutions"
+        }
+      ]
+    }
+  ],
+  "sitelinks": [
+    {
+      "text": "Get a Free Assessment",
+      "description1": "Evaluate your AI needs",
+      "description2": "Start today with Luby",
+      "final_url": "https://landing.luby.co/agentic_ai_development"
+    },
+    {
+      "text": "See How It Works",
+      "description1": "Learn about our process",
+      "description2": "Automate safely with AI",
+      "final_url": "https://landing.luby.co/agentic_ai_development"
+    },
+    {
+      "text": "Talk to a Specialist",
+      "description1": "Get expert advice",
+      "description2": "Discuss your project",
+      "final_url": "https://landing.luby.co/agentic_ai_development"
+    },
+    {
+      "text": "Book a Call Now",
+      "description1": "Schedule a consultation",
+      "description2": "Meet our specialists",
+      "final_url": "https://schedule.luby.co"
+    }
+  ]
+}

@@ -4,6 +4,9 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
+  define: {
+    "import.meta.env.VITE_SUPABASE_ANON_KEY": JSON.stringify("test-anon-key"),
+  },
   test: {
     environment: "jsdom",
     globals: true,

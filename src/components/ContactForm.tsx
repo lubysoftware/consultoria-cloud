@@ -2,68 +2,26 @@ import { useState } from "react";
 import { Send, FileSearch, ShieldCheck, BarChart3, ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
+import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { useToast } from "./ui/use-toast";
-import { supabase } from "@/lib/supabase";
+import { normalizeBrazilPhone, isValidBrazilPhone } from "@/lib/phone";
 import { landingConfig } from "@/config/landing-config";
 
-const iconMap = [FileSearch, ShieldCheck, BarChart3, ArrowRight];
+const CONTACTS_EDGE_FUNCTION_URL =
+  "https://pbvjsixlqnuzcnqahbxu.supabase.co/functions/v1/contacts-landings-br";
 
+const iconMap = [FileSearch, ShieldCheck, BarChart3, ArrowRight];
 const benefits = landingConfig.contactForm.benefits.map((benefit, index) => ({
   icon: iconMap[index] || FileSearch,
   text: benefit.text,
 }));
 
-const technologies = [
-  "Python",
-  "Node.js / JavaScript",
-  "Java",
-  ".NET / C#",
-  "Go",
-  "Ruby",
-  "Outro",
-];
-
-const documentationOptions = ["Sim", "Parcial", "Não"];
-
-const painOptions = [
-  "Performance",
-  "Custo",
-  "Manutenibilidade",
-  "Risco de segurança",
-  "Integrações",
-  "Atrasos no roadmap",
-];
-
-const systemSizes = [
-  "Pequeno (1-5 sistemas)",
-  "Médio (6-15 sistemas)",
-  "Grande (16+ sistemas)",
-];
-
-const urgencies = [
-  "Imediata",
-  "30 dias",
-  "60 dias",
-  "Explorando opções",
-];
-
 const initialFormData = {
   name: "",
   email: "",
   phone: "",
-  technology: "",
-  documentation: "",
-  pain: "",
-  urgency: "",
-  systemSize: "",
+  message: "",
 };
 
 export const ContactForm = () => {
@@ -73,35 +31,79 @@ export const ContactForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const name = formData.name.trim();
+    const email = formData.email.trim();
+    const phoneRaw = formData.phone.trim();
+
+    if (!name || !email || !phoneRaw) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Preencha nome, e-mail e telefone.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!isValidBrazilPhone(phoneRaw)) {
+      toast({
+        title: "Telefone inválido",
+        description: "Use DDD + número (10 ou 11 dígitos).",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const normalizedPhone = normalizeBrazilPhone(phoneRaw);
+    const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    if (!anonKey) {
+      toast({
+        title: "Erro de configuração",
+        description: "Chave do Supabase não configurada.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
+      const originUrl = window.location.href;
       const payload = {
-        origin_url: window.location.href,
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || null,
-        tech_stack: formData.technology ? { technology: formData.technology } : null,
-        documentation: formData.documentation || null,
-        pain: formData.pain || "Agent AI development request",
-        timezone,
-        urgency: formData.urgency || null,
-        message: null,
-        system_size: formData.systemSize ? { size: formData.systemSize } : null,
+        origin_url: originUrl,
+        name,
+        email,
+        phone: normalizedPhone,
+        company_name: null,
+        profile: landingConfig.themeLabel,
+        message: formData.message?.trim() || null,
+        launch_goal: null,
+        regulated_operation: null,
+        urgency: null,
         raw_payload: {
-          ...formData,
+          name,
+          email,
+          phone: normalizedPhone,
+          message: formData.message?.trim() || null,
           submittedAt: new Date().toISOString(),
         },
+        crm_sync: null,
       };
 
-      const { error } = await supabase
-        .from("contacts_landings")
-        .insert([payload])
-        .select();
+      const response = await fetch(CONTACTS_EDGE_FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${anonKey}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errBody = await response.json().catch(() => ({}));
+        const errMsg = (errBody as { error?: string })?.error;
+        throw new Error(errMsg || "Falha no envio");
+      }
 
       toast({
         title: "Mensagem enviada!",
@@ -113,10 +115,11 @@ export const ContactForm = () => {
       }
 
       setFormData(initialFormData);
-    } catch {
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Não foi possível enviar o formulário. Tente novamente.";
       toast({
         title: "Erro",
-        description: "Não foi possível enviar o formulário. Tente novamente.",
+        description: message,
         variant: "destructive",
       });
     } finally {
@@ -129,7 +132,8 @@ export const ContactForm = () => {
       <div
         className="absolute -top-16 left-1/2 -translate-x-1/2 w-[70%] h-48 pointer-events-none opacity-60"
         style={{
-          background: "radial-gradient(ellipse 100% 60% at center, rgba(65, 160, 220, 0.5) 0%, rgba(65, 160, 220, 0.2) 40%, transparent 80%)",
+          background:
+            "radial-gradient(ellipse 100% 60% at center, rgba(65, 160, 220, 0.5) 0%, rgba(65, 160, 220, 0.2) 40%, transparent 80%)",
           filter: "blur(70px)",
         }}
       />
@@ -139,7 +143,9 @@ export const ContactForm = () => {
             <span className="section-label text-primary">{landingConfig.contactForm.label}</span>
             <h2 className="font-display text-3xl md:text-4xl lg:text-[2.5rem] mt-4 mb-6 font-extrabold leading-[1.35]">
               {landingConfig.contactForm.title}
-              {landingConfig.contactForm.titleHighlight && <span className="text-primary"> {landingConfig.contactForm.titleHighlight}</span>}
+              {landingConfig.contactForm.titleHighlight && (
+                <span className="text-primary"> {landingConfig.contactForm.titleHighlight}</span>
+              )}
             </h2>
             <p className="text-muted-foreground mb-8 leading-relaxed">
               {landingConfig.contactForm.description}
@@ -173,101 +179,38 @@ export const ContactForm = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm text-foreground mb-2 block">E-mail corporativo *</Label>
-                  <Input
-                    type="email"
-                    placeholder="E-mail corporativo"
-                    required
-                    className="bg-input border-border/50"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label className="text-sm text-foreground mb-2 block">Telefone *</Label>
-                  <Input
-                    type="tel"
-                    placeholder="Telefone"
-                    required
-                    className="bg-input border-border/50"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  />
-                </div>
+              <div>
+                <Label className="text-sm text-foreground mb-2 block">E-mail *</Label>
+                <Input
+                  type="email"
+                  placeholder="E-mail"
+                  required
+                  className="bg-input border-border/50"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
               </div>
 
               <div>
-                <Label className="text-sm text-foreground mb-2 block">Qual tecnologia vocês usam hoje?</Label>
-                <Select onValueChange={(value) => setFormData({ ...formData, technology: value })}>
-                  <SelectTrigger className="bg-input border-border/50">
-                    <SelectValue placeholder="Selecione uma tecnologia" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {technologies.map((tech) => (
-                      <SelectItem key={tech} value={tech.toLowerCase()}>{tech}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label className="text-sm text-foreground mb-2 block">Telefone *</Label>
+                <Input
+                  type="tel"
+                  placeholder="(00) 00000-0000"
+                  required
+                  className="bg-input border-border/50"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm text-foreground mb-2 block">Vocês têm documentação?</Label>
-                  <Select onValueChange={(value) => setFormData({ ...formData, documentation: value })}>
-                    <SelectTrigger className="bg-input border-border/50">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {documentationOptions.map((opt) => (
-                        <SelectItem key={opt} value={opt.toLowerCase()}>{opt}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm text-foreground mb-2 block">Qual é sua principal dor hoje?</Label>
-                  <Select onValueChange={(value) => setFormData({ ...formData, pain: value })}>
-                    <SelectTrigger className="bg-input border-border/50">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {painOptions.map((pain) => (
-                        <SelectItem key={pain} value={pain.toLowerCase()}>{pain}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm text-foreground mb-2 block">Nível de urgência</Label>
-                  <Select onValueChange={(value) => setFormData({ ...formData, urgency: value })}>
-                    <SelectTrigger className="bg-input border-border/50">
-                      <SelectValue placeholder="Selecione a urgência" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {urgencies.map((urg) => (
-                        <SelectItem key={urg} value={urg.toLowerCase()}>{urg}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm text-foreground mb-2 block">Tamanho estimado do sistema</Label>
-                  <Select onValueChange={(value) => setFormData({ ...formData, systemSize: value })}>
-                    <SelectTrigger className="bg-input border-border/50">
-                      <SelectValue placeholder="Selecione o tamanho" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {systemSizes.map((size) => (
-                        <SelectItem key={size} value={size.toLowerCase()}>{size}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label className="text-sm text-foreground mb-2 block">Descrição</Label>
+                <Textarea
+                  placeholder="Descreva sua necessidade ou dúvida"
+                  className="bg-input border-border/50 min-h-[100px]"
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                />
               </div>
 
               <div className="flex flex-col gap-3">
@@ -299,7 +242,8 @@ export const ContactForm = () => {
       <div
         className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-[70%] h-48 pointer-events-none opacity-60"
         style={{
-          background: "radial-gradient(ellipse 100% 60% at center, rgba(65, 160, 220, 0.5) 0%, rgba(65, 160, 220, 0.2) 40%, transparent 80%)",
+          background:
+            "radial-gradient(ellipse 100% 60% at center, rgba(65, 160, 220, 0.5) 0%, rgba(65, 160, 220, 0.2) 40%, transparent 80%)",
           filter: "blur(70px)",
         }}
       />
